@@ -183,7 +183,7 @@ export interface ProposalResponsePayload {
 }
 
 export interface PeerMessage {
-  type: 'query' | 'response' | 'announce' | 'proposal' | 'proposal_response';
+  type: 'query' | 'response' | 'announce' | 'proposal' | 'proposal_response' | (string & {});
   beaconId: string;
   payload: unknown;
 }

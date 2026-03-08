@@ -31,6 +31,17 @@ export {
 } from './types.js';
 
 export {
+  // Skill plugin types
+  type SkillDatabase,
+  type SkillManifest,
+  type SkillContext,
+  type Skill,
+  type McpToolDef,
+  type McpPromptDef,
+  type SkillDistribution,
+} from './skill.js';
+
+export {
   // Schema interfaces
   type AttributeField,
   type CategorySchema,
