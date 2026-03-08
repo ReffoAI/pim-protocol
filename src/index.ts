@@ -42,6 +42,17 @@ export {
 } from './skill.js';
 
 export {
+  // Sanitization utilities
+  type FieldConstraint,
+  FIELD_CONSTRAINTS,
+  stripHtml,
+  sanitizeField,
+  sanitizeObject,
+  delimitUserText,
+  parseDhtMessage,
+} from './sanitize.js';
+
+export {
   // Schema interfaces
   type AttributeField,
   type CategorySchema,
