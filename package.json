@@ -1,6 +1,6 @@
 {
   "name": "@reffo/protocol",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Schema.org + Reffo extension types, category schemas, and utility functions for the Reffo protocol",
   "license": "CC0-1.0",
   "type": "module",
