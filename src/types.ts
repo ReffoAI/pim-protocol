@@ -65,6 +65,10 @@ export interface Ref {
   purchasePrice?: number;
   /** Reffo: collection this ref belongs to */
   collectionId?: string;
+  /** Whether this ref is published to the Reffo network mirror */
+  networkPublished: boolean;
+  /** Public share URL on reffo.ai (set after network publish) */
+  shareUrl?: string;
   /** Reffo: beacon public key that owns this ref */
   beaconId: string;
   /** Schema.org: dateCreated */
@@ -73,7 +77,7 @@ export interface Ref {
   updatedAt: string;
 }
 
-export type RefCreate = Omit<Ref, 'id' | 'beaconId' | 'createdAt' | 'updatedAt' | 'listingStatus' | 'quantity' | 'reffoSynced' | 'reffoRefId'> & {
+export type RefCreate = Omit<Ref, 'id' | 'beaconId' | 'createdAt' | 'updatedAt' | 'listingStatus' | 'quantity' | 'reffoSynced' | 'reffoRefId' | 'networkPublished' | 'shareUrl'> & {
   listingStatus?: ListingStatus;
   quantity?: number;
 };
@@ -118,6 +122,8 @@ export interface BeaconSettings {
   defaultSellingScope: SellingScope;
   defaultSellingRadiusMiles: number;
   profilePicturePath?: string;
+  /** Whether to auto-publish public items to reffo.ai (default: true) */
+  networkPublishEnabled: boolean;
 }
 
 export interface BeaconInfo {
