@@ -6,7 +6,19 @@ This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semant
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+- `archivedAt` field to `Negotiation` interface
+- Overhaul category schemas: 32 schemas covering 97 subcategories, export `getAttributeKeys`
+- Formal protocol name to README and normalized references
+
+### Changed
+- Rename package to `@pelagora/pim-protocol` (updated package name and repository URL)
+
+## [0.2.1] - 2026-03-04
+
+### Added
+- Input sanitization utilities for all trust boundaries
+- `Skill` plugin interface and widened `PeerMessage` type for skill extensions
 
 ## [0.2.0] - 2026-03-01
 
