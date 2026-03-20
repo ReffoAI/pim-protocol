@@ -2,7 +2,7 @@
 
 **Personal Inventory Management Protocol**
 
-Shared definitions for the protocol. Contains Schema.org-aligned types, category schemas, and utility functions used by Reffo Beacon, Reffo Webapp, and other implementations.
+Shared definitions for the protocol. Contains Schema.org-aligned types, category schemas, and utility functions used by Pelagora, Reffo Webapp, and other implementations.
 
 ## Install
 
