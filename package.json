@@ -1,6 +1,6 @@
 {
   "name": "@pelagora/pim-protocol",
-  "version": "0.2.1",
+  "version": "0.3.0-beta.1",
   "description": "Schema.org + Reffo extension types, category schemas, and utility functions for the protocol",
   "license": "CC0-1.0",
   "type": "module",
