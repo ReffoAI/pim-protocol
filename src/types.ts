@@ -65,6 +65,12 @@ export interface Ref {
   purchasePrice?: number;
   /** Reffo: collection this ref belongs to */
   collectionId?: string;
+  /** Accepted payment methods */
+  acceptedPaymentMethods?: PaymentMethod[];
+  /** Whether this ref is published to the Reffo network mirror */
+  networkPublished: boolean;
+  /** Public share URL on reffo.ai (set after network publish) */
+  shareUrl?: string;
   /** Reffo: beacon public key that owns this ref */
   beaconId: string;
   /** Schema.org: dateCreated */
@@ -73,7 +79,7 @@ export interface Ref {
   updatedAt: string;
 }
 
-export type RefCreate = Omit<Ref, 'id' | 'beaconId' | 'createdAt' | 'updatedAt' | 'listingStatus' | 'quantity' | 'reffoSynced' | 'reffoRefId'> & {
+export type RefCreate = Omit<Ref, 'id' | 'beaconId' | 'createdAt' | 'updatedAt' | 'listingStatus' | 'quantity' | 'reffoSynced' | 'reffoRefId' | 'networkPublished' | 'shareUrl'> & {
   listingStatus?: ListingStatus;
   quantity?: number;
 };
@@ -118,6 +124,10 @@ export interface BeaconSettings {
   defaultSellingScope: SellingScope;
   defaultSellingRadiusMiles: number;
   profilePicturePath?: string;
+  /** Accepted payment methods */
+  acceptedPaymentMethods?: PaymentMethod[];
+  /** Whether to auto-publish public items to reffo.ai (default: true) */
+  networkPublishEnabled: boolean;
 }
 
 export interface BeaconInfo {
@@ -146,10 +156,40 @@ export interface RefMedia {
   createdAt: string;
 }
 
-// Negotiation types
+// Conversation types (replaces old Negotiation types)
+export type ConversationStatus = 'open' | 'closed';
+export type ChatMessageType = 'text' | 'offer' | 'counter' | 'accept' | 'reject' | 'withdraw' | 'sold' | 'system';
+export type PaymentMethod = 'venmo' | 'cashapp' | 'zelle' | 'paypal' | 'bitcoin' | 'check' | 'cash' | 'apple_pay' | 'lightning' | 'wire';
+
+// Keep old types as aliases for transition
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'sold';
 export type NegotiationRole = 'buyer' | 'seller';
 
+export interface Conversation {
+  id: string;
+  refId: string;
+  refName: string;
+  counterpartBeaconId: string;
+  role: 'buyer' | 'seller';
+  status: ConversationStatus;
+  closedBy?: string;
+  lastMessageAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ConversationMessage {
+  id: string;
+  conversationId: string;
+  senderBeaconId: string;
+  messageType: ChatMessageType;
+  content?: string;
+  amount?: number;
+  currency?: string;
+  createdAt: string;
+}
+
+// Keep old Negotiation interface as alias during transition
 export interface Negotiation {
   id: string;
   refId: string;
@@ -172,7 +212,24 @@ export type NegotiationCreate = Omit<Negotiation, 'createdAt' | 'updatedAt' | 's
   status?: NegotiationStatus;
 };
 
-// DHT payloads for negotiations
+// DHT payloads for conversations
+export interface ChatMessagePayload {
+  conversationId: string;
+  messageId: string;
+  refId: string;
+  refName: string;
+  messageType: ChatMessageType;
+  content?: string;
+  amount?: number;
+  currency?: string;
+}
+
+export interface ConversationClosePayload {
+  conversationId: string;
+  refId: string;
+}
+
+// Legacy DHT payloads (kept for reference)
 export interface ProposalPayload {
   negotiationId: string;
   refId: string;
@@ -190,7 +247,7 @@ export interface ProposalResponsePayload {
 }
 
 export interface PeerMessage {
-  type: 'query' | 'response' | 'announce' | 'proposal' | 'proposal_response' | (string & {});
+  type: 'query' | 'response' | 'announce' | 'proposal' | 'proposal_response' | 'chat_message' | 'conversation_close' | (string & {});
   beaconId: string;
   payload: unknown;
 }
@@ -216,6 +273,7 @@ export interface AnnouncePayload {
     locationCountry?: string;
     sellingScope?: SellingScope;
     sellingRadiusMiles?: number;
+    acceptedPaymentMethods?: PaymentMethod[];
   })[];
   offers: Pick<Offer, 'id' | 'refId' | 'price' | 'priceCurrency' | 'status'>[];
 }
