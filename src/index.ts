@@ -51,10 +51,15 @@ export {
 export {
   // Sanitization utilities
   type FieldConstraint,
+  type SanitizeMode,
+  type CoordinateValidationResult,
+  SanitizationError,
   FIELD_CONSTRAINTS,
   stripHtml,
   sanitizeField,
   sanitizeObject,
+  isValidEmail,
+  validateCoordinates,
   delimitUserText,
   parseDhtMessage,
 } from './sanitize.js';
