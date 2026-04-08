@@ -3,6 +3,7 @@ export {
   type ListingStatus,
   type RentalDurationUnit,
   type SellingScope,
+  type StockType,
   type OfferStatus,
   type MediaType,
   type NegotiationStatus,
