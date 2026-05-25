@@ -66,6 +66,16 @@ export {
 } from './sanitize.js';
 
 export {
+  // Well-known endpoint types and validation
+  type PimOperator,
+  type PimRateLimits,
+  type PimCapabilities,
+  type PimDiscoveryDoc,
+  type PimRefsFeed,
+  isValidSellerCheckoutUrl,
+} from './well-known.js';
+
+export {
   // Schema interfaces
   type AttributeField,
   type CategorySchema,

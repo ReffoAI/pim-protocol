@@ -1,6 +1,6 @@
 {
   "name": "@pelagora/pim-protocol",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Schema.org + Reffo extension types, category schemas, and utility functions for the protocol",
   "license": "CC0-1.0",
   "type": "module",
@@ -17,11 +17,14 @@
         "types": "./dist/cjs/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
-    }
+    },
+    "./schemas/well-known/pim-discovery": "./schemas/well-known/pim-discovery.schema.json",
+    "./schemas/well-known/pim-refs-feed": "./schemas/well-known/pim-refs-feed.schema.json"
   },
   "files": [
     "dist",
     "src",
+    "schemas",
     "LICENSE",
     "README.md"
   ],

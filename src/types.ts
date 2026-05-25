@@ -77,6 +77,14 @@ export interface Ref {
   networkPublished: boolean;
   /** Public share URL on reffo.ai (set after network publish) */
   shareUrl?: string;
+  /**
+   * Optional seller-supplied Stripe Checkout URL for direct purchase.
+   * When present, agent surfaces (ACP feeds, Pelagora skills) route buyers
+   * directly to the seller's Stripe Checkout. The PIM operator never sees
+   * payment data — this is a pure pass-through URL.
+   * Must be https and hostname must be stripe.com or a subdomain thereof.
+   */
+  seller_checkout_url?: string;
   /** Reffo: beacon public key that owns this ref */
   beaconId: string;
   /** Schema.org: dateCreated */

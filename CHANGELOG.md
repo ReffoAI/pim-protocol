@@ -14,6 +14,18 @@ This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semant
 
 Nothing yet.
 
+## [0.6.0] — 2026-05-25
+
+### Added
+- `/.well-known/pim` and `/.well-known/pim/refs.json` endpoint conventions documented in `docs/well-known.md`
+- `PimDiscoveryDoc` and `PimRefsFeed` TypeScript types exported from the package entrypoint
+- `PimOperator`, `PimRateLimits`, `PimCapabilities` helper types
+- `isValidSellerCheckoutUrl()` validation function (https-only, `*.stripe.com` hostname rule)
+- JSON Schema files for both well-known shapes under `schemas/well-known/`
+- `schemas/` directory included in npm package; schemas accessible via package exports
+- Optional `seller_checkout_url` field on `Ref` — seller-supplied Stripe Checkout URL (https + stripe.com hostname required). Documented as: "When present, agent surfaces route buyers directly to the seller's Stripe Checkout. The PIM operator never sees payment data."
+- No breaking changes — all additions are purely additive. Existing 0.5.x consumers that do not set `seller_checkout_url` continue to work without modification.
+
 ## [0.4.0] - 2026-04-03
 
 ### Added

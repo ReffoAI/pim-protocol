@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pelagora.org/schemas/well-known/pim-discovery.schema.json",
+  "title": "PimDiscoveryDoc",
+  "description": "Shape of the /.well-known/pim discovery document.",
+  "type": "object",
+  "required": ["pim_version", "operator", "capabilities"],
+  "additionalProperties": false,
+  "properties": {
+    "pim_version": {
+      "type": "string",
+      "description": "PIM Protocol version this operator conforms to (e.g. '0.6')."
+    },
+    "operator": {
+      "type": "object",
+      "required": ["name", "url", "support_email"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "support_email": { "type": "string", "format": "email" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["refs_feed"],
+      "additionalProperties": false,
+      "properties": {
+        "refs_feed": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the catalog feed (/.well-known/pim/refs.json)."
+        },
+        "checkout": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "Optional checkout URL pattern. Omit or null for discovery-only operators."
+        }
+      }
+    },
+    "platform_role": {
+      "type": "string",
+      "enum": ["pairing", "merchant"],
+      "description": "Role of this operator: 'pairing' = discovery/matching only; 'merchant' = direct seller."
+    },
+    "processes_payments": {
+      "type": "boolean",
+      "description": "Whether this operator processes payments on behalf of sellers."
+    },
+    "rate_limits": {
+      "type": "object",
+      "required": ["anonymous_rps", "authenticated_rps"],
+      "additionalProperties": false,
+      "properties": {
+        "anonymous_rps": { "type": "number", "minimum": 0 },
+        "authenticated_rps": { "type": "number", "minimum": 0 }
+      }
+    },
+    "terms": { "type": "string", "format": "uri" },
+    "privacy": { "type": "string", "format": "uri" }
+  }
+}

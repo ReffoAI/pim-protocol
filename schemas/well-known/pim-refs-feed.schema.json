@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pelagora.org/schemas/well-known/pim-refs-feed.schema.json",
+  "title": "PimRefsFeed",
+  "description": "Shape of the /.well-known/pim/refs.json catalog feed.",
+  "type": "object",
+  "required": ["pim_version", "refs"],
+  "additionalProperties": false,
+  "properties": {
+    "pim_version": {
+      "type": "string",
+      "description": "PIM Protocol version this feed conforms to (e.g. '0.6')."
+    },
+    "refs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Ref" }
+    },
+    "next_page_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for the next page of results. Absent on the last page."
+    }
+  },
+  "$defs": {
+    "Ref": {
+      "type": "object",
+      "required": [
+        "id", "name", "description", "category", "subcategory",
+        "listingStatus", "quantity", "reffoSynced", "networkPublished",
+        "beaconId", "createdAt", "updatedAt"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "subcategory": { "type": "string" },
+        "image": { "type": "string" },
+        "sku": { "type": "string" },
+        "listingStatus": {
+          "type": "string",
+          "enum": ["private", "for_sale", "willing_to_sell", "for_rent", "sold_out", "archived_sold", "archived_deleted"]
+        },
+        "quantity": { "type": "number" },
+        "stockType": { "type": "string", "enum": ["tracked", "unlimited"] },
+        "negotiable": { "type": "boolean" },
+        "reffoSynced": { "type": "boolean" },
+        "reffoRefId": { "type": "string" },
+        "locationLat": { "type": "number" },
+        "locationLng": { "type": "number" },
+        "locationAddress": { "type": "string" },
+        "locationCity": { "type": "string" },
+        "locationState": { "type": "string" },
+        "locationZip": { "type": "string" },
+        "locationCountry": { "type": "string" },
+        "sellingScope": { "type": "string", "enum": ["global", "national", "range"] },
+        "sellingRadiusMiles": { "type": "number" },
+        "attributes": { "type": "object" },
+        "condition": { "type": "string" },
+        "rentalTerms": { "type": "string" },
+        "rentalDeposit": { "type": "number" },
+        "rentalDuration": { "type": "number" },
+        "rentalDurationUnit": { "type": "string", "enum": ["hours", "days", "weeks", "months"] },
+        "purchaseDate": { "type": "string" },
+        "purchasePrice": { "type": "number" },
+        "collectionId": { "type": "string" },
+        "acceptedPaymentMethods": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "networkPublished": { "type": "boolean" },
+        "shareUrl": { "type": "string" },
+        "seller_checkout_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://([a-zA-Z0-9-]+\\.)*stripe\\.com/",
+          "description": "Optional seller-supplied Stripe Checkout URL. Must be https and on the stripe.com domain."
+        },
+        "beaconId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}
