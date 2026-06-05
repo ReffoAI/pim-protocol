@@ -99,25 +99,28 @@ Cap each page at a reasonable size (e.g. 1,000 items). Include `next_page_url` w
 
 ---
 
-## `seller_checkout_url` on `Ref`
+## `sellerCheckoutUrl` on `Ref`
 
-The `Ref` type includes an optional `seller_checkout_url` field. When present, agent surfaces (ACP feeds, Pelagora skills) route buyers directly to the seller's Stripe Checkout. The PIM operator never sees payment data — this is a pass-through URL owned and controlled by the seller.
+The `Ref` type includes an optional `sellerCheckoutUrl` field. When present, agent surfaces (ACP feeds, Pelagora skills) route buyers directly to the seller's checkout. The PIM operator never sees payment data — this is a pass-through URL owned and controlled by the seller.
+
+PIM is **provider-neutral**: any seller-hosted https checkout endpoint is conformant — Stripe Checkout, a BTCPay/Lightning invoice page, or any other processor. Restricting checkout to a specific payment provider is an operator/product policy and belongs in the consuming application (e.g. a reffo-api allowlist), not in the canonical protocol.
 
 **Constraints:**
+- Must be a well-formed URL
 - Protocol must be `https`
-- Hostname must be `stripe.com` or a subdomain of `stripe.com` (e.g. `buy.stripe.com`, `checkout.stripe.com`)
-- Non-Stripe URLs and `http://` are rejected
+- Must not embed credentials (no `user:pass@` userinfo)
 
-**Validation:** use `isValidSellerCheckoutUrl(url)` exported from `@pelagora/pim-protocol`.
+**Validation:** use `isValidCheckoutUrl(url)` exported from `@pelagora/pim-protocol`.
 
 ```ts
-import { isValidSellerCheckoutUrl } from '@pelagora/pim-protocol';
+import { isValidCheckoutUrl } from '@pelagora/pim-protocol';
 
-isValidSellerCheckoutUrl(undefined);                          // true (optional)
-isValidSellerCheckoutUrl('https://buy.stripe.com/abc');       // true
-isValidSellerCheckoutUrl('https://checkout.stripe.com/abc');  // true
-isValidSellerCheckoutUrl('http://stripe.com/abc');            // false (not https)
-isValidSellerCheckoutUrl('https://example.com/pay');          // false (not stripe.com)
+isValidCheckoutUrl(undefined);                              // true (optional)
+isValidCheckoutUrl('https://buy.stripe.com/abc');           // true
+isValidCheckoutUrl('https://checkout.example.com/pay');     // true (any provider)
+isValidCheckoutUrl('https://pay.myshop.io/i/invoice123');   // true (BTCPay/Lightning)
+isValidCheckoutUrl('http://checkout.example.com/pay');      // false (not https)
+isValidCheckoutUrl('https://user:pass@example.com/pay');    // false (embedded credentials)
 ```
 
 ---
@@ -135,7 +138,7 @@ const feed: PimRefsFeed = await fetch(discovery.capabilities.refs_feed).then(r =
 
 // 3. Work with refs
 for (const ref of feed.refs) {
-  console.log(ref.name, ref.seller_checkout_url ?? 'contact seller via listing');
+  console.log(ref.name, ref.sellerCheckoutUrl ?? 'contact seller via listing');
 }
 ```
 

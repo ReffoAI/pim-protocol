@@ -20,11 +20,12 @@ Nothing yet.
 - `/.well-known/pim` and `/.well-known/pim/refs.json` endpoint conventions documented in `docs/well-known.md`
 - `PimDiscoveryDoc` and `PimRefsFeed` TypeScript types exported from the package entrypoint
 - `PimOperator`, `PimRateLimits`, `PimCapabilities` helper types
-- `isValidSellerCheckoutUrl()` validation function (https-only, `*.stripe.com` hostname rule)
+- `isValidCheckoutUrl()` validation function — provider-neutral: asserts a well-formed https URL with no embedded credentials. Does NOT restrict checkout to any single payment provider; provider allowlisting is left to the consuming application.
 - JSON Schema files for both well-known shapes under `schemas/well-known/`
 - `schemas/` directory included in npm package; schemas accessible via package exports
-- Optional `seller_checkout_url` field on `Ref` — seller-supplied Stripe Checkout URL (https + stripe.com hostname required). Documented as: "When present, agent surfaces route buyers directly to the seller's Stripe Checkout. The PIM operator never sees payment data."
-- No breaking changes — all additions are purely additive. Existing 0.5.x consumers that do not set `seller_checkout_url` continue to work without modification.
+- Optional `sellerCheckoutUrl` field on `Ref` — seller-hosted checkout URL. Provider-neutral (Stripe, BTCPay/Lightning, or any https processor). "When present, agent surfaces route buyers directly to the seller's checkout. The PIM operator never sees payment data."
+- `PAYMENT_METHODS` const exported as the single source of truth for `PaymentMethod`; the `acceptedPaymentMethods` JSON Schema enum is kept in lockstep by a drift-guard test.
+- No breaking changes — all additions are purely additive. Existing 0.5.x consumers that do not set `sellerCheckoutUrl` continue to work without modification.
 
 ## [0.4.0] - 2026-04-03
 

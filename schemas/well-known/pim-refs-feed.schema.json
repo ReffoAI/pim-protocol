@@ -66,15 +66,17 @@
         "collectionId": { "type": "string" },
         "acceptedPaymentMethods": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string",
+            "enum": ["venmo", "cashapp", "zelle", "paypal", "bitcoin", "check", "cash", "apple_pay", "lightning", "wire"]
+          }
         },
         "networkPublished": { "type": "boolean" },
         "shareUrl": { "type": "string" },
-        "seller_checkout_url": {
+        "sellerCheckoutUrl": {
           "type": "string",
           "format": "uri",
-          "pattern": "^https://([a-zA-Z0-9-]+\\.)*stripe\\.com/",
-          "description": "Optional seller-supplied Stripe Checkout URL. Must be https and on the stripe.com domain."
+          "description": "Optional seller-hosted checkout URL. Provider-neutral: must be a well-formed https URL (Stripe, BTCPay/Lightning, or any seller-hosted processor). The PIM operator never sees payment data."
         },
         "beaconId": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },

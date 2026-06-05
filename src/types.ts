@@ -78,13 +78,15 @@ export interface Ref {
   /** Public share URL on reffo.ai (set after network publish) */
   shareUrl?: string;
   /**
-   * Optional seller-supplied Stripe Checkout URL for direct purchase.
+   * Optional seller-hosted checkout URL for direct purchase.
    * When present, agent surfaces (ACP feeds, Pelagora skills) route buyers
-   * directly to the seller's Stripe Checkout. The PIM operator never sees
-   * payment data — this is a pure pass-through URL.
-   * Must be https and hostname must be stripe.com or a subdomain thereof.
+   * directly to the seller's checkout. The PIM operator never sees payment
+   * data — this is a pure pass-through URL.
+   * Provider-neutral: any https checkout endpoint (Stripe, BTCPay/Lightning,
+   * etc.) is valid. Must be a well-formed https URL with no embedded
+   * credentials; see isValidCheckoutUrl().
    */
-  seller_checkout_url?: string;
+  sellerCheckoutUrl?: string;
   /** Reffo: beacon public key that owns this ref */
   beaconId: string;
   /** Schema.org: dateCreated */
@@ -173,7 +175,13 @@ export interface RefMedia {
 // Conversation types (replaces old Negotiation types)
 export type ConversationStatus = 'open' | 'closed';
 export type ChatMessageType = 'text' | 'offer' | 'counter' | 'accept' | 'reject' | 'withdraw' | 'sold' | 'system';
-export type PaymentMethod = 'venmo' | 'cashapp' | 'zelle' | 'paypal' | 'bitcoin' | 'check' | 'cash' | 'apple_pay' | 'lightning' | 'wire';
+/**
+ * Canonical list of accepted payment method identifiers — single source of truth.
+ * The `PaymentMethod` type and the JSON Schema `acceptedPaymentMethods` enum both
+ * derive from this; a drift-guard test keeps the schema in lockstep.
+ */
+export const PAYMENT_METHODS = ['venmo', 'cashapp', 'zelle', 'paypal', 'bitcoin', 'check', 'cash', 'apple_pay', 'lightning', 'wire'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 // Keep old types as aliases for transition
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'sold';

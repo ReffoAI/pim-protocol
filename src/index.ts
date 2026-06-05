@@ -11,6 +11,7 @@ export {
   type ConversationStatus,
   type ChatMessageType,
   type PaymentMethod,
+  PAYMENT_METHODS,
   // Interfaces
   type Ref,
   type RefCreate,
@@ -72,7 +73,7 @@ export {
   type PimCapabilities,
   type PimDiscoveryDoc,
   type PimRefsFeed,
-  isValidSellerCheckoutUrl,
+  isValidCheckoutUrl,
 } from './well-known.js';
 
 export {

@@ -47,7 +47,7 @@ Types and validation for the `/.well-known/pim` discovery convention (v0.6+):
 
 - **`PimDiscoveryDoc`** — Shape of `/.well-known/pim` (discovery document)
 - **`PimRefsFeed`** — Shape of `/.well-known/pim/refs.json` (paginated catalog feed)
-- **`isValidSellerCheckoutUrl(url)`** — Validates `Ref.seller_checkout_url` (https + stripe.com hostname)
+- **`isValidCheckoutUrl(url)`** — Validates `Ref.sellerCheckoutUrl` (well-formed https, no embedded credentials; provider-neutral)
 
 JSON Schemas are available at:
 ```ts

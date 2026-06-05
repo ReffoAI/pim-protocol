@@ -72,22 +72,35 @@ export interface PimRefsFeed {
 }
 
 // ---------------------------------------------------------------------------
-// seller_checkout_url validation
+// sellerCheckoutUrl validation
 // ---------------------------------------------------------------------------
 
-// Matches https:// followed by an optional subdomain chain, then stripe.com, then / or end
-const STRIPE_URL_PATTERN = /^https:\/\/([a-zA-Z0-9-]+\.)*stripe\.com(\/|$)/;
-
 /**
- * Validates a seller_checkout_url value.
+ * Validates a sellerCheckoutUrl value.
+ *
+ * PIM is a vendor-neutral protocol: it asserts only that a checkout URL is a
+ * well-formed, safe https endpoint. It deliberately does NOT restrict which
+ * payment provider hosts the checkout — Stripe, a BTCPay/Lightning page, or any
+ * other seller-hosted processor are all conformant. Provider allowlisting is an
+ * operator/product policy and belongs in the consuming application (e.g. at the
+ * reffo-api serialization seam), not in the canonical protocol surface.
  *
  * Rules:
+ *   - Must be a parseable URL
  *   - Must use the https scheme
- *   - Hostname must be stripe.com or a subdomain of stripe.com
+ *   - Must not embed credentials (userinfo)
  *
  * Returns true when the value is undefined (field is optional).
  */
-export function isValidSellerCheckoutUrl(value: string | undefined): boolean {
+export function isValidCheckoutUrl(value: string | undefined): boolean {
   if (value === undefined) return true;
-  return STRIPE_URL_PATTERN.test(value);
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'https:') return false;
+  if (url.username !== '' || url.password !== '') return false;
+  return true;
 }
