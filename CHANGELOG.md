@@ -1,14 +1,14 @@
 # Changelog
 
-All notable changes to **@reffo/protocol** will be documented in this file.
+All notable changes to **@pelagora/pim-protocol** will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
 ## [0.5.0] — 2026-04-08
 
 ### Added
-- `sold_out` listing status and `StockType` enum (`single`, `multi`, `unlimited`)
-- `negotiable` flag on `RefItem` with `NegotiableMode` type (`obo` | `firm`)
+- `sold_out` listing status and `StockType` type (`tracked` | `unlimited`)
+- `negotiable` boolean flag on `Ref`
 
 ## [Unreleased]
 
