@@ -66,9 +66,10 @@
         "collectionId": { "type": "string" },
         "acceptedPaymentMethods": {
           "type": "array",
+          "description": "Accepted payment methods. Open vocabulary — any string is valid. The examples are the recommended generic rails for interop; proprietary/regional methods may use a free-form value.",
           "items": {
             "type": "string",
-            "enum": ["venmo", "cashapp", "zelle", "paypal", "bitcoin", "check", "cash", "apple_pay", "lightning", "wire"]
+            "examples": ["cash", "check", "bank_transfer", "card", "bitcoin", "lightning"]
           }
         },
         "networkPublished": { "type": "boolean" },

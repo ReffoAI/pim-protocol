@@ -11,7 +11,7 @@ export {
   type ConversationStatus,
   type ChatMessageType,
   type PaymentMethod,
-  PAYMENT_METHODS,
+  RECOMMENDED_PAYMENT_METHODS,
   // Interfaces
   type Ref,
   type RefCreate,

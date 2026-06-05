@@ -176,12 +176,19 @@ export interface RefMedia {
 export type ConversationStatus = 'open' | 'closed';
 export type ChatMessageType = 'text' | 'offer' | 'counter' | 'accept' | 'reject' | 'withdraw' | 'sold' | 'system';
 /**
- * Canonical list of accepted payment method identifiers — single source of truth.
- * The `PaymentMethod` type and the JSON Schema `acceptedPaymentMethods` enum both
- * derive from this; a drift-guard test keeps the schema in lockstep.
+ * Recommended vocabulary for `acceptedPaymentMethods` — generic payment *rails*,
+ * not proprietary brands. PIM is vendor-neutral: this is an advisory controlled
+ * vocabulary for interop (so agent surfaces can filter/badge consistently), NOT a
+ * closed allowlist. The `PaymentMethod` type and the JSON Schema both stay OPEN —
+ * any string is valid, so novel/regional/branded methods (e.g. a specific wallet
+ * app, Pix, UPI, Interac) are never gated and never require a protocol bump.
+ * Prefer a generic rail when one fits; fall back to a free-form string otherwise.
+ * A drift-guard test keeps the schema's recommended `examples` in sync with this.
  */
-export const PAYMENT_METHODS = ['venmo', 'cashapp', 'zelle', 'paypal', 'bitcoin', 'check', 'cash', 'apple_pay', 'lightning', 'wire'] as const;
-export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+export const RECOMMENDED_PAYMENT_METHODS = ['cash', 'check', 'bank_transfer', 'card', 'bitcoin', 'lightning'] as const;
+
+/** Open payment-method identifier: a recommended rail or any other string. */
+export type PaymentMethod = (typeof RECOMMENDED_PAYMENT_METHODS)[number] | (string & {});
 
 // Keep old types as aliases for transition
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'sold';

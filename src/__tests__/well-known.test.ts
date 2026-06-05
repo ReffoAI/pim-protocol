@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { isValidCheckoutUrl } from '../well-known.js';
-import { PAYMENT_METHODS } from '../types.js';
+import { RECOMMENDED_PAYMENT_METHODS } from '../types.js';
 
 describe('isValidCheckoutUrl', () => {
   it('accepts undefined (field is optional)', () => {
@@ -47,10 +47,18 @@ describe('Ref schema drift guard', () => {
   );
   const refProps = schema.$defs.Ref.properties;
 
-  it('acceptedPaymentMethods enum matches the PAYMENT_METHODS source of truth', () => {
-    // If this fails, the JSON Schema has drifted from src/types.ts — update the
-    // schema's enum to match PAYMENT_METHODS (or vice versa). They must agree.
-    expect(refProps.acceptedPaymentMethods.items.enum).toEqual([...PAYMENT_METHODS]);
+  it('keeps acceptedPaymentMethods OPEN — no hard enum (any string is valid)', () => {
+    // PIM is vendor-neutral: payment methods are an open vocabulary, so the
+    // schema must NOT pin items to a closed enum. Novel/regional/branded methods
+    // must pass without a protocol bump.
+    expect(refProps.acceptedPaymentMethods.items.enum).toBeUndefined();
+    expect(refProps.acceptedPaymentMethods.items.type).toBe('string');
+  });
+
+  it('schema examples stay in sync with RECOMMENDED_PAYMENT_METHODS', () => {
+    // The recommended vocabulary is advisory (examples), not a constraint. If this
+    // fails, update the schema's examples to match src/types.ts (or vice versa).
+    expect(refProps.acceptedPaymentMethods.items.examples).toEqual([...RECOMMENDED_PAYMENT_METHODS]);
   });
 
   it('exposes sellerCheckoutUrl (camelCase) and not the legacy snake_case key', () => {
