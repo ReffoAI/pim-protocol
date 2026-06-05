@@ -1,4 +1,4 @@
-# @reffo/protocol
+# @pelagora/pim-protocol
 
 **Personal Inventory Management Protocol**
 
@@ -7,7 +7,7 @@ Shared definitions for the protocol. Contains Schema.org-aligned types, category
 ## Install
 
 ```bash
-npm install @reffo/protocol
+npm install @pelagora/pim-protocol
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ import {
   buildSchemaOrgLD,
   blurLocation,
   haversineDistanceMiles,
-} from '@reffo/protocol';
+} from '@pelagora/pim-protocol';
 ```
 
 ## What's Included
