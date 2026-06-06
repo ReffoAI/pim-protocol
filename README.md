@@ -1,4 +1,4 @@
-# @reffo/protocol
+# @pelagora/pim-protocol
 
 **Personal Inventory Management Protocol**
 
@@ -7,7 +7,7 @@ Shared definitions for the protocol. Contains Schema.org-aligned types, category
 ## Install
 
 ```bash
-npm install @reffo/protocol
+npm install @pelagora/pim-protocol
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ import {
   buildSchemaOrgLD,
   blurLocation,
   haversineDistanceMiles,
-} from '@reffo/protocol';
+} from '@pelagora/pim-protocol';
 ```
 
 ## What's Included
@@ -40,6 +40,22 @@ Utility functions:
 
 - `blurLocation(lat, lng)` — Reduce precision to ~0.7 mi / zip-code level
 - `haversineDistanceMiles(lat1, lng1, lat2, lng2)` — Great-circle distance
+
+### Well-Known Endpoints (`well-known.ts`)
+
+Types and validation for the `/.well-known/pim` discovery convention (v0.6+):
+
+- **`PimDiscoveryDoc`** — Shape of `/.well-known/pim` (discovery document)
+- **`PimRefsFeed`** — Shape of `/.well-known/pim/refs.json` (paginated catalog feed)
+- **`isValidCheckoutUrl(url)`** — Validates `Ref.sellerCheckoutUrl` (well-formed https, no embedded credentials; provider-neutral)
+
+JSON Schemas are available at:
+```ts
+import discoverySchema from '@pelagora/pim-protocol/schemas/well-known/pim-discovery';
+import refsFeedSchema from '@pelagora/pim-protocol/schemas/well-known/pim-refs-feed';
+```
+
+See [`docs/well-known.md`](./docs/well-known.md) for endpoint specifications, examples, and implementation guidance.
 
 ### Schemas (`schemas.ts`)
 

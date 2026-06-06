@@ -1,6 +1,6 @@
 {
   "name": "@pelagora/pim-protocol",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Schema.org + Reffo extension types, category schemas, and utility functions for the protocol",
   "license": "CC0-1.0",
   "type": "module",
@@ -17,11 +17,14 @@
         "types": "./dist/cjs/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
-    }
+    },
+    "./schemas/well-known/pim-discovery": "./schemas/well-known/pim-discovery.schema.json",
+    "./schemas/well-known/pim-refs-feed": "./schemas/well-known/pim-refs-feed.schema.json"
   },
   "files": [
     "dist",
     "src",
+    "schemas",
     "LICENSE",
     "README.md"
   ],
@@ -30,10 +33,12 @@
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "lint": "tsc --noEmit -p tsconfig.json",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "vitest run"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vitest": "^4.1.7"
   },
   "repository": {
     "type": "git",

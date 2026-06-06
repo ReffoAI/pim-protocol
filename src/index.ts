@@ -11,6 +11,7 @@ export {
   type ConversationStatus,
   type ChatMessageType,
   type PaymentMethod,
+  RECOMMENDED_PAYMENT_METHODS,
   // Interfaces
   type Ref,
   type RefCreate,
@@ -64,6 +65,16 @@ export {
   delimitUserText,
   parseDhtMessage,
 } from './sanitize.js';
+
+export {
+  // Well-known endpoint types and validation
+  type PimOperator,
+  type PimRateLimits,
+  type PimCapabilities,
+  type PimDiscoveryDoc,
+  type PimRefsFeed,
+  isValidCheckoutUrl,
+} from './well-known.js';
 
 export {
   // Schema interfaces

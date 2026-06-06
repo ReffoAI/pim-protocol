@@ -77,6 +77,16 @@ export interface Ref {
   networkPublished: boolean;
   /** Public share URL on reffo.ai (set after network publish) */
   shareUrl?: string;
+  /**
+   * Optional seller-hosted checkout URL for direct purchase.
+   * When present, agent surfaces (ACP feeds, Pelagora skills) route buyers
+   * directly to the seller's checkout. The PIM operator never sees payment
+   * data — this is a pure pass-through URL.
+   * Provider-neutral: any https checkout endpoint (Stripe, BTCPay/Lightning,
+   * etc.) is valid. Must be a well-formed https URL with no embedded
+   * credentials; see isValidCheckoutUrl().
+   */
+  sellerCheckoutUrl?: string;
   /** Reffo: beacon public key that owns this ref */
   beaconId: string;
   /** Schema.org: dateCreated */
@@ -165,7 +175,20 @@ export interface RefMedia {
 // Conversation types (replaces old Negotiation types)
 export type ConversationStatus = 'open' | 'closed';
 export type ChatMessageType = 'text' | 'offer' | 'counter' | 'accept' | 'reject' | 'withdraw' | 'sold' | 'system';
-export type PaymentMethod = 'venmo' | 'cashapp' | 'zelle' | 'paypal' | 'bitcoin' | 'check' | 'cash' | 'apple_pay' | 'lightning' | 'wire';
+/**
+ * Recommended vocabulary for `acceptedPaymentMethods` — generic payment *rails*,
+ * not proprietary brands. PIM is vendor-neutral: this is an advisory controlled
+ * vocabulary for interop (so agent surfaces can filter/badge consistently), NOT a
+ * closed allowlist. The `PaymentMethod` type and the JSON Schema both stay OPEN —
+ * any string is valid, so novel/regional/branded methods (e.g. a specific wallet
+ * app, Pix, UPI, Interac) are never gated and never require a protocol bump.
+ * Prefer a generic rail when one fits; fall back to a free-form string otherwise.
+ * A drift-guard test keeps the schema's recommended `examples` in sync with this.
+ */
+export const RECOMMENDED_PAYMENT_METHODS = ['cash', 'check', 'bank_transfer', 'card', 'bitcoin', 'lightning'] as const;
+
+/** Open payment-method identifier: a recommended rail or any other string. */
+export type PaymentMethod = (typeof RECOMMENDED_PAYMENT_METHODS)[number] | (string & {});
 
 // Keep old types as aliases for transition
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'sold';

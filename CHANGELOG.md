@@ -1,18 +1,31 @@
 # Changelog
 
-All notable changes to **@reffo/protocol** will be documented in this file.
+All notable changes to **@pelagora/pim-protocol** will be documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
 ## [0.5.0] — 2026-04-08
 
 ### Added
-- `sold_out` listing status and `StockType` enum (`single`, `multi`, `unlimited`)
-- `negotiable` flag on `RefItem` with `NegotiableMode` type (`obo` | `firm`)
+- `sold_out` listing status and `StockType` type (`tracked` | `unlimited`)
+- `negotiable` boolean flag on `Ref`
 
 ## [Unreleased]
 
 Nothing yet.
+
+## [0.6.0] — 2026-05-25
+
+### Added
+- `/.well-known/pim` and `/.well-known/pim/refs.json` endpoint conventions documented in `docs/well-known.md`
+- `PimDiscoveryDoc` and `PimRefsFeed` TypeScript types exported from the package entrypoint
+- `PimOperator`, `PimRateLimits`, `PimCapabilities` helper types
+- `isValidCheckoutUrl()` validation function — provider-neutral: asserts a well-formed https URL with no embedded credentials. Does NOT restrict checkout to any single payment provider; provider allowlisting is left to the consuming application.
+- JSON Schema files for both well-known shapes under `schemas/well-known/`
+- `schemas/` directory included in npm package; schemas accessible via package exports
+- Optional `sellerCheckoutUrl` field on `Ref` — seller-hosted checkout URL. Provider-neutral (Stripe, BTCPay/Lightning, or any https processor). "When present, agent surfaces route buyers directly to the seller's checkout. The PIM operator never sees payment data."
+- `acceptedPaymentMethods` is an **open vocabulary**: `PaymentMethod` and the JSON Schema both accept any string, so novel/regional/branded methods are never gated. `RECOMMENDED_PAYMENT_METHODS` exports an advisory set of generic rails (`cash`, `check`, `bank_transfer`, `card`, `bitcoin`, `lightning`) for interop; a drift-guard test keeps the schema's recommended `examples` in sync. Proprietary brand identifiers were removed from the canonical surface.
+- No breaking changes — all additions are purely additive. Existing 0.5.x consumers that do not set `sellerCheckoutUrl` continue to work without modification.
 
 ## [0.4.0] - 2026-04-03
 
