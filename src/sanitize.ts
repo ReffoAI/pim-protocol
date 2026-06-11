@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * Input sanitization utilities for the protocol.
  *
