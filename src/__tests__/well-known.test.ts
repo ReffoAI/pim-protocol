@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { isValidCheckoutUrl } from '../well-known.js';
-import { RECOMMENDED_PAYMENT_METHODS } from '../types.js';
+import { RECOMMENDED_PAYMENT_METHODS, RECOMMENDED_EVENT_TYPES } from '../types.js';
 
 describe('isValidCheckoutUrl', () => {
   it('accepts undefined (field is optional)', () => {
@@ -70,5 +70,50 @@ describe('Ref schema drift guard', () => {
     // PIM is vendor-neutral: the schema must not pin checkout to one provider.
     expect(refProps.sellerCheckoutUrl.pattern).toBeUndefined();
     expect(refProps.sellerCheckoutUrl.format).toBe('uri');
+  });
+});
+
+describe('Ref schema drift guard — v0.7 location-visibility + event fields', () => {
+  const schema = JSON.parse(
+    readFileSync(
+      fileURLToPath(new URL('../../schemas/well-known/pim-refs-feed.schema.json', import.meta.url)),
+      'utf8',
+    ),
+  );
+  const refProps = schema.$defs.Ref.properties;
+
+  it('locationVisibility is a CLOSED enum (binary privacy discriminator)', () => {
+    expect(refProps.locationVisibility).toBeDefined();
+    expect(refProps.locationVisibility.type).toBe('string');
+    expect(refProps.locationVisibility.enum).toEqual(['approximate', 'exact']);
+  });
+
+  it('eventType is OPEN — no enum, has examples matching RECOMMENDED_EVENT_TYPES', () => {
+    expect(refProps.eventType).toBeDefined();
+    expect(refProps.eventType.enum).toBeUndefined();
+    expect(refProps.eventType.type).toBe('string');
+    expect(refProps.eventType.examples).toEqual([...RECOMMENDED_EVENT_TYPES]);
+  });
+
+  it('date fields exist with format: date-time', () => {
+    for (const field of ['startDate', 'endDate', 'validFrom', 'validThrough']) {
+      expect(refProps[field]).toBeDefined();
+      expect(refProps[field].type).toBe('string');
+      expect(refProps[field].format).toBe('date-time');
+    }
+  });
+
+  it('timeZone field exists as an open string (no format constraint)', () => {
+    expect(refProps.timeZone).toBeDefined();
+    expect(refProps.timeZone.type).toBe('string');
+    expect(refProps.timeZone.format).toBeUndefined();
+  });
+
+  it('none of the v0.7 fields are in the required array (all optional)', () => {
+    const required: string[] = schema.$defs.Ref.required ?? [];
+    const newFields = ['locationVisibility', 'startDate', 'endDate', 'timeZone', 'validFrom', 'validThrough', 'eventType'];
+    for (const field of newFields) {
+      expect(required).not.toContain(field);
+    }
   });
 });

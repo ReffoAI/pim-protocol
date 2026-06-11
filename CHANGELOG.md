@@ -14,6 +14,33 @@ This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semant
 
 Nothing yet.
 
+## [0.7.0] — 2026-06-11
+
+### Added
+
+- `LocationVisibility` type (`'approximate' | 'exact'`) — privacy discriminator for location fields. **Default semantics: absent = `'approximate'`** (existing listings are unaffected — they stay private). `'exact'` opts a listing into public address disclosure (e.g. a garage sale). Consumers (Pelagora, etc.) must enforce this: blur coordinates and omit `locationAddress` unless this field is explicitly `'exact'`.
+- `EventType` open-vocabulary type and `RECOMMENDED_EVENT_TYPES` advisory constant (`garage_sale`, `estate_sale`, `flea_market`, `pop_up`, `ticketed_event`). Open string — novel event kinds are never gated and require no protocol bump.
+- Seven optional fields on `Ref` (all additive, no `required` changes, no breakage):
+  - `locationVisibility?: LocationVisibility`
+  - `startDate?: string` (ISO 8601 — event occurrence start)
+  - `endDate?: string` (ISO 8601 — event occurrence end)
+  - `timeZone?: string` (IANA name, e.g. `America/New_York`)
+  - `validFrom?: string` (ISO 8601 — Schema.org `Offer.availabilityStarts`)
+  - `validThrough?: string` (ISO 8601 — Schema.org `Offer.availabilityThrough`)
+  - `eventType?: EventType` (open vocabulary)
+- `LocationVisibility`, `EventType`, and `RECOMMENDED_EVENT_TYPES` exported from the package entrypoint.
+- JSON Schema updated: `locationVisibility` is a closed `enum` (correct — it is a privacy discriminator, not a vocabulary); `eventType` is an open string with `examples` (vendor-neutral vocab pattern); date fields carry `format: "date-time"`.
+- `buildSchemaOrgLD`: when `validFrom`/`validThrough` are present, emits `offer.availabilityStarts`/`availabilityEnds`; when `startDate` + `eventType` are present, emits a `reffo:event` node (Schema.org `Event`) — exact street address included only when `locationVisibility === 'exact'`.
+- Drift-guard tests for all new schema surface: `locationVisibility` has closed `enum`; `eventType` has no `enum` and `examples` match `RECOMMENDED_EVENT_TYPES`; date fields have `format: "date-time"`; none of the seven fields appear in `required`.
+
+### Notes
+
+- **Privacy default preserved:** absent `locationVisibility` MUST mean approximate; consumers must never expose `locationAddress` or precise coordinates unless the field is explicitly `'exact'`.
+- **Protocol stays declarative:** no `expired` `ListingStatus` added; no auto-mutation on `endDate`. Consumers derive expiry at render time from `endDate`/`validThrough`.
+- **Reserved future seams:** `recurrenceRule` (recurring events) and a first-class `PimEvent` entity are reserved by name — not in 0.7.0, names reserved to avoid a later rename.
+- **Consumer follow-on required (ticket 0022):** this protocol change is inert until the Pelagora consumer learns to honor `locationVisibility: 'exact'` and render the address publicly.
+- **Human publish steps:** merge the PR → `npm publish` → tag `v0.7.0` in GitHub. The EDM cannot publish.
+
 ## [0.6.0] — 2026-05-25
 
 ### Added
