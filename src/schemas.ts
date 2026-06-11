@@ -953,6 +953,25 @@ export function buildSchemaOrgLD(
     offerStatus?: string;
     sellerId?: string;
     offerLocation?: string;
+    /** ISO 8601 availability window start (Schema.org Offer.availabilityStarts) */
+    validFrom?: string;
+    /** ISO 8601 availability window end (Schema.org Offer.availabilityThrough) */
+    validThrough?: string;
+    /** ISO 8601 event start date */
+    startDate?: string;
+    /** ISO 8601 event end date */
+    endDate?: string;
+    /** Open event type (e.g. 'garage_sale') */
+    eventType?: string;
+    /** Location visibility — 'exact' allows including the street address in LD */
+    locationVisibility?: string;
+    locationAddress?: string;
+    locationCity?: string;
+    locationState?: string;
+    locationZip?: string;
+    locationCountry?: string;
+    locationLat?: number;
+    locationLng?: number;
   },
 ): Record<string, unknown> {
   const schema = getCategorySchema(category, subcategory);
@@ -983,7 +1002,39 @@ export function buildSchemaOrgLD(
     if (baseFields.offerStatus) offer.availability = baseFields.offerStatus;
     if (baseFields.sellerId) offer.seller = { '@type': 'Organization', '@id': baseFields.sellerId };
     if (baseFields.offerLocation) offer.availableAtOrFrom = baseFields.offerLocation;
+    if (baseFields.validFrom) offer.availabilityStarts = baseFields.validFrom;
+    if (baseFields.validThrough) offer.availabilityEnds = baseFields.validThrough;
     ld.offers = offer;
+  }
+
+  // Emit a Schema.org Event node when startDate + eventType are present.
+  // Include the exact address only when locationVisibility is explicitly 'exact'.
+  if (baseFields.startDate && baseFields.eventType) {
+    const place: Record<string, unknown> = { '@type': 'Place' };
+    if (baseFields.locationVisibility === 'exact') {
+      const postal: Record<string, unknown> = { '@type': 'PostalAddress' };
+      if (baseFields.locationAddress) postal.streetAddress = baseFields.locationAddress;
+      if (baseFields.locationCity) postal.addressLocality = baseFields.locationCity;
+      if (baseFields.locationState) postal.addressRegion = baseFields.locationState;
+      if (baseFields.locationZip) postal.postalCode = baseFields.locationZip;
+      if (baseFields.locationCountry) postal.addressCountry = baseFields.locationCountry;
+      place.address = postal;
+    }
+    if (baseFields.locationLat != null && baseFields.locationLng != null) {
+      place.geo = {
+        '@type': 'GeoCoordinates',
+        latitude: baseFields.locationLat,
+        longitude: baseFields.locationLng,
+      };
+    }
+    const event: Record<string, unknown> = {
+      '@type': 'Event',
+      name: baseFields.name,
+      startDate: baseFields.startDate,
+    };
+    if (baseFields.endDate) event.endDate = baseFields.endDate;
+    if (Object.keys(place).length > 1) event.location = place;
+    ld['reffo:event'] = event;
   }
 
   return ld;

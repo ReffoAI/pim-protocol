@@ -53,6 +53,26 @@ export interface Ref {
   sellingScope?: SellingScope;
   /** Selling radius in miles (when scope = 'range') */
   sellingRadiusMiles?: number;
+  /**
+   * Location visibility. Absent = 'approximate' (default, privacy-safe).
+   * 'approximate': coordinates blurred to ~zip; locationAddress never shared.
+   * 'exact': precise coordinates + locationAddress may be shared publicly.
+   * Consumers (e.g. Pelagora) enforce this — they must blur and omit locationAddress
+   * unless this field is explicitly 'exact'.
+   */
+  locationVisibility?: LocationVisibility;
+  /** Event start date/time (ISO 8601). For garage sales, estate sales, pop-ups, etc. */
+  startDate?: string;
+  /** Event end date/time (ISO 8601). */
+  endDate?: string;
+  /** IANA timezone name (e.g. 'America/New_York'). When absent, startDate/endDate SHOULD carry a UTC offset. */
+  timeZone?: string;
+  /** Availability window open (Schema.org Offer.availabilityStarts). ISO 8601. */
+  validFrom?: string;
+  /** Availability window close (Schema.org Offer.availabilityThrough). ISO 8601. */
+  validThrough?: string;
+  /** Open event-type vocabulary. Recommended values in RECOMMENDED_EVENT_TYPES; any string is valid. */
+  eventType?: EventType;
   /** Category-specific attributes (JSON) */
   attributes?: Record<string, unknown>;
   /** Category-appropriate condition */
@@ -189,6 +209,24 @@ export const RECOMMENDED_PAYMENT_METHODS = ['cash', 'check', 'bank_transfer', 'c
 
 /** Open payment-method identifier: a recommended rail or any other string. */
 export type PaymentMethod = (typeof RECOMMENDED_PAYMENT_METHODS)[number] | (string & {});
+
+/**
+ * Location visibility discriminator. Default semantics: absent = 'approximate'.
+ * - 'approximate': coordinates blurred to ~zip precision; locationAddress NEVER shared.
+ * - 'exact': precise coordinates; locationAddress MAY be shared publicly (e.g. garage sale).
+ * Privacy is enforced by the consumer — this field declares intent, not permission.
+ */
+export type LocationVisibility = 'approximate' | 'exact';
+
+/**
+ * Recommended event-type vocabulary (advisory, not an allowlist).
+ * EventType is an open string so novel event kinds are never gated.
+ * A drift-guard test keeps the schema's examples in sync with this list.
+ */
+export const RECOMMENDED_EVENT_TYPES = ['garage_sale', 'estate_sale', 'flea_market', 'pop_up', 'ticketed_event'] as const;
+
+/** Open event-type identifier: a recommended value or any free-form string. */
+export type EventType = (typeof RECOMMENDED_EVENT_TYPES)[number] | (string & {});
 
 // Keep old types as aliases for transition
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'sold';

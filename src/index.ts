@@ -12,6 +12,9 @@ export {
   type ChatMessageType,
   type PaymentMethod,
   RECOMMENDED_PAYMENT_METHODS,
+  type LocationVisibility,
+  type EventType,
+  RECOMMENDED_EVENT_TYPES,
   // Interfaces
   type Ref,
   type RefCreate,

@@ -79,6 +79,40 @@
           "format": "uri",
           "description": "Optional seller-hosted checkout URL. Provider-neutral: must be a well-formed https URL (Stripe, BTCPay/Lightning, or any seller-hosted processor). The PIM operator never sees payment data."
         },
+        "locationVisibility": {
+          "type": "string",
+          "enum": ["approximate", "exact"],
+          "description": "Location visibility discriminator. Absent = 'approximate' (default). 'approximate': coordinates blurred to ~zip, locationAddress never shared. 'exact': precise coordinates + locationAddress may be shared publicly. Consumers must enforce this — they must blur and omit locationAddress unless this field is explicitly 'exact'."
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Event start date/time (ISO 8601). For garage sales, estate sales, pop-ups, ticketed events, etc."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Event end date/time (ISO 8601)."
+        },
+        "timeZone": {
+          "type": "string",
+          "description": "IANA timezone name (e.g. 'America/New_York'). When absent, startDate/endDate SHOULD carry a UTC offset."
+        },
+        "validFrom": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Availability window open (Schema.org Offer.availabilityStarts). ISO 8601."
+        },
+        "validThrough": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Availability window close (Schema.org Offer.availabilityThrough). ISO 8601."
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Open event-type vocabulary. Any string is valid; the examples are the recommended values.",
+          "examples": ["garage_sale", "estate_sale", "flea_market", "pop_up", "ticketed_event"]
+        },
         "beaconId": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
